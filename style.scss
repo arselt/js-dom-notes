@@ -1,13 +1,21 @@
-$off-white: #F4F4F8;
-$dark-grey: #424B54;
-$pale-yellow: #FDF8D9;
-$pale-green: #2FDAA7;
+// Palette: raw colors, only referenced by the role tokens below.
+$palette-slate: #424B54;
+$palette-cloud: #F4F4F8;
+$palette-butter: #FDF8D9;
+$palette-mint: #2FDAA7;
+$palette-coral: #D86E81;
 
-$box-shadow: 0px 10px 10px 4px rgba(66,75,84,0.2);
-$box-shadow-hover: 0px 14px 14px 4px rgba(66,75,84,0.25);
+// Roles: the only colors components should use.
+$color-desk: $palette-cloud;
+$color-ink: $palette-slate;
+$color-note: $palette-butter;
+$color-accent: $palette-mint;
+$color-tape: rgba($palette-coral, 0.55);
+$color-ink-on-ink: $palette-butter;
+$color-rule: rgba($palette-slate, 0.14);
 
-$title-font: "DM Mono", monospace;
-$body-font: "DM Sans", sans-serif;
+$font-title: "DM Mono", monospace;
+$font-body: "DM Sans", sans-serif;
 
 $page-gutter: 50px;
 $page-gutter-mobile: 25px;
@@ -15,36 +23,54 @@ $grid-gap: 30px;
 $card-min-width: 280px;
 $tap-target: 44px;
 $mobile-breakpoint: 768px;
+$note-line-height: 24px;
+
+$perspective: 900px;
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+$shadow-note:
+  0 1px 1px rgba($palette-slate, 0.18),
+  0 6px 8px rgba($palette-slate, 0.14),
+  0 16px 24px rgba($palette-slate, 0.16);
+$shadow-note-lifted:
+  0 2px 2px rgba($palette-slate, 0.18),
+  0 18px 22px rgba($palette-slate, 0.2),
+  0 40px 50px rgba($palette-slate, 0.22);
 
 body {
-  background-color: $off-white;
+  background-color: $color-desk;
+  background-image:
+    radial-gradient(circle at 50% 0%, #fff 0, transparent 60%),
+    radial-gradient(rgba($palette-slate, 0.07) 1px, transparent 1px);
+  background-size: auto, 22px 22px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  color: $dark-grey;
+  color: $color-ink;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 h1 {
-  font-family: $title-font;
+  font-family: $font-title;
   font-size: 48px;
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 rgba($palette-slate, 0.25); // letterpress
   @media (max-width: $mobile-breakpoint) {
     font-size: 28px;
   }
 }
 
 .button {
-  font-family: $title-font;
+  font-family: $font-title;
   font-size: inherit;
   color: inherit;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  transition: background-color 0.15s, box-shadow 0.15s;
+  transition: background-color 0.15s, color 0.15s, transform 0.1s, box-shadow 0.1s;
   &:focus-visible {
-    outline: 2px solid $dark-grey;
+    outline: 2px solid $color-ink;
     outline-offset: 4px;
   }
   @media (max-width: $mobile-breakpoint) {
@@ -52,13 +78,31 @@ h1 {
   }
 }
 
+// Keycap: raised bevel that sinks when pressed.
 #addNote {
   min-height: $tap-target;
-  padding: 0 20px;
-  border: 3px solid $dark-grey;
+  padding: 0 22px;
   border-radius: 999px;
+  border: 2px solid $color-ink;
+  background: linear-gradient(180deg, lighten($color-accent, 18%), $color-accent);
+  box-shadow:
+    inset 0 2px 0 rgba(#fff, 0.7),
+    0 5px 0 $color-ink,
+    0 9px 12px rgba($palette-slate, 0.3);
+  transform: translateY(0);
   &:hover {
-    background-color: $pale-green;
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 2px 0 rgba(#fff, 0.7),
+      0 7px 0 $color-ink,
+      0 13px 16px rgba($palette-slate, 0.3);
+  }
+  &:active {
+    transform: translateY(5px);
+    box-shadow:
+      inset 0 2px 0 rgba(#fff, 0.5),
+      0 0 0 $color-ink,
+      0 2px 4px rgba($palette-slate, 0.3);
   }
 }
 
@@ -68,13 +112,13 @@ h1 {
   margin: 0 -14px -10px 0;
   border-radius: 999px;
   &:hover {
-    background-color: $dark-grey;
-    color: $pale-yellow;
+    background-color: $color-ink;
+    color: $color-ink-on-ink;
   }
 }
 
 p {
-  font-family: $body-font;
+  font-family: $font-body;
   font-size: 16px;
   @media (max-width: $mobile-breakpoint) {
     font-size: 14px;
@@ -88,7 +132,7 @@ header {
   gap: 16px;
   margin: 0 $page-gutter;
   padding: 25px 0;
-  border-bottom: solid $dark-grey 3px;
+  border-bottom: solid $color-ink 3px;
   @media (max-width: $mobile-breakpoint) {
     margin: 0 $page-gutter-mobile;
   }
@@ -107,52 +151,107 @@ main {
   &:empty::before {
     content: "No notes yet. Press “add note” to start.";
     grid-column: 1 / -1;
-    font-family: $body-font;
+    font-family: $font-body;
     text-align: center;
     opacity: 0.8;
   }
 }
 
+// --rest-rotation, --enter-delay: set from JS. --tilt-x/--tilt-y: pointer tilt.
 article {
-  background-color: $pale-yellow;
-  box-shadow: $box-shadow;
+  --rest-rotation: 0deg;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --lift: 0px;
+  position: relative;
+  background:
+    linear-gradient(160deg, rgba(#fff, 0.55) 0%, transparent 45%),
+    linear-gradient(180deg, lighten($color-note, 3%), darken($color-note, 4%));
+  box-shadow: $shadow-note, inset 0 1px 0 rgba(#fff, 0.8);
   aspect-ratio: 1;
-  border-radius: 22px;
-  padding: 25px;
+  border-radius: 6px 6px 22px 6px;
+  padding: 38px 25px 25px;
   display: flex;
   flex-direction: column;
   align-items: end;
   gap: 10px;
-  transition: box-shadow 0.15s;
+  transform-style: preserve-3d;
+  transform:
+    perspective($perspective)
+    translateZ(var(--lift))
+    rotateX(var(--tilt-x))
+    rotateY(var(--tilt-y))
+    rotate(var(--rest-rotation));
+  transition: transform 0.15s ease-out, box-shadow 0.25s;
+  animation: note-enter 0.7s $ease-spring both;
+  animation-delay: var(--enter-delay, 0s);
+
+  // Masking tape.
+  &::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 90px;
+    height: 26px;
+    background: linear-gradient(90deg, rgba(#fff, 0.35), transparent 30%, rgba(#fff, 0.25)), $color-tape;
+    box-shadow: 0 1px 3px rgba($palette-slate, 0.25);
+    transform: translateX(-50%) translateZ(2px) rotate(-3deg);
+    clip-path: polygon(0 0, 4% 15%, 0 30%, 4% 45%, 0 60%, 4% 75%, 0 100%, 100% 100%, 96% 85%, 100% 70%, 96% 55%, 100% 40%, 96% 25%, 100% 0);
+    pointer-events: none;
+  }
+
   &:hover {
-    box-shadow: $box-shadow-hover;
+    --lift: 30px;
+    box-shadow: $shadow-note-lifted, inset 0 1px 0 rgba(#fff, 0.8);
   }
   &:focus-within {
-    outline: 2px solid $dark-grey;
-    outline-offset: 2px;
+    outline: 2px solid $color-ink;
+    outline-offset: 4px;
+  }
+
+  &.is-removing {
+    pointer-events: none;
+    animation: note-leave 0.55s cubic-bezier(0.5, 0, 0.9, 0.4) forwards;
+  }
+}
+
+@keyframes note-enter {
+  from {
+    opacity: 0;
+    transform: perspective($perspective) translateY(-120px) translateZ(200px) rotateX(75deg) rotateZ(-14deg);
+  }
+  60% {
+    opacity: 1;
+  }
+}
+
+// Peels off the desk and flies away.
+@keyframes note-leave {
+  to {
+    opacity: 0;
+    transform: perspective($perspective) translate3d(120px, -80px, 300px) rotateX(-60deg) rotateY(70deg) rotateZ(25deg) scale(0.5);
   }
 }
 
 textarea {
   width: 100%;
   flex: 1;
-  font-family: $title-font;
+  font-family: $font-title;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: $note-line-height;
   color: inherit;
 
   border: none;
   overflow: auto;
   outline: none;
-  background: transparent;
+  background: repeating-linear-gradient(transparent 0 ($note-line-height - 1), $color-rule ($note-line-height - 1) $note-line-height) local;
 
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
-
   resize: none;
+  transform: translateZ(1px);
   &::placeholder {
-    color: $dark-grey;
+    color: $color-ink;
     opacity: 0.8;
   }
 }
@@ -160,7 +259,7 @@ textarea {
 footer {
   margin: 0 $page-gutter;
   padding: 25px 0;
-  border-top: solid $dark-grey 3px;
+  border-top: solid $color-ink 3px;
   @media (max-width: $mobile-breakpoint) {
     margin: 0 $page-gutter-mobile;
   }
@@ -169,5 +268,9 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition: none !important;
+    animation: none !important;
+  }
+  article {
+    --lift: 0px;
   }
 }
