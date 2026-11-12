@@ -37,6 +37,7 @@ function createNoteElement(id, content) {
     textarea.id = id;
     textarea.value = content;
     textarea.setAttribute('aria-label', 'Note');
+    textarea.placeholder = 'Write something…';
     textarea.addEventListener('input', saveNotes);
 
     const deleteButton = document.createElement('button');

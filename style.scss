@@ -2,27 +2,34 @@ $off-white: #F4F4F8;
 $dark-grey: #424B54;
 $pale-yellow: #FDF8D9;
 $pale-green: #2FDAA7;
-$pale-red: #D86E81;
 
 $box-shadow: 0px 10px 10px 4px rgba(66,75,84,0.2);
+$box-shadow-hover: 0px 14px 14px 4px rgba(66,75,84,0.25);
 
 $title-font: "DM Mono", monospace;
 $body-font: "DM Sans", sans-serif;
 
+$page-gutter: 50px;
+$page-gutter-mobile: 25px;
+$grid-gap: 30px;
+$card-min-width: 280px;
+$tap-target: 44px;
+$mobile-breakpoint: 768px;
+
 body {
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   background-color: $off-white;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   color: $dark-grey;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 h1 {
   font-family: $title-font;
   font-size: 48px;
-  @media (max-width: 560px) {
+  @media (max-width: $mobile-breakpoint) {
     font-size: 28px;
   }
 }
@@ -35,19 +42,41 @@ h1 {
   border: none;
   padding: 0;
   cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
   &:focus-visible {
     outline: 2px solid $dark-grey;
     outline-offset: 4px;
   }
-  @media (max-width: 560px) {
+  @media (max-width: $mobile-breakpoint) {
     font-size: 14px;
+  }
+}
+
+#addNote {
+  min-height: $tap-target;
+  padding: 0 20px;
+  border: 3px solid $dark-grey;
+  border-radius: 999px;
+  &:hover {
+    background-color: $pale-green;
+  }
+}
+
+.delete-button {
+  min-height: $tap-target;
+  padding: 0 14px;
+  margin: 0 -14px -10px 0;
+  border-radius: 999px;
+  &:hover {
+    background-color: $dark-grey;
+    color: $pale-yellow;
   }
 }
 
 p {
   font-family: $body-font;
   font-size: 16px;
-  @media (max-width: 560px) {
+  @media (max-width: $mobile-breakpoint) {
     font-size: 14px;
   }
 }
@@ -56,30 +85,31 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 50px;
+  gap: 16px;
+  margin: 0 $page-gutter;
   padding: 25px 0;
   border-bottom: solid $dark-grey 3px;
-  @media (max-width: 768px) {
-    margin: 0 25px;
+  @media (max-width: $mobile-breakpoint) {
+    margin: 0 $page-gutter-mobile;
   }
 }
 
 main {
   flex: 1;
-  margin: 65px 50px 75px;
+  margin: 65px $page-gutter 75px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, calc(33.333333% - 20px));
-  grid-auto-flow: row;
-  gap: 30px;
-  @media (min-width: 1600px) {
-    grid-template-columns: repeat(auto-fill, calc(25% - 22.5px))
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, $card-min-width), 1fr));
+  align-content: start;
+  gap: $grid-gap;
+  @media (max-width: $mobile-breakpoint) {
+    margin: 50px $page-gutter-mobile 60px;
   }
-  @media (max-width: 1024px) and (min-width: 769px) {
-    grid-template-columns: repeat(auto-fill, calc(50% - 15px));
-  }
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    margin: 50px 25px 60px;
+  &:empty::before {
+    content: "No notes yet. Press “add note” to start.";
+    grid-column: 1 / -1;
+    font-family: $body-font;
+    text-align: center;
+    opacity: 0.8;
   }
 }
 
@@ -93,6 +123,10 @@ article {
   flex-direction: column;
   align-items: end;
   gap: 10px;
+  transition: box-shadow 0.15s;
+  &:hover {
+    box-shadow: $box-shadow-hover;
+  }
   &:focus-within {
     outline: 2px solid $dark-grey;
     outline-offset: 2px;
@@ -102,7 +136,10 @@ article {
 textarea {
   width: 100%;
   flex: 1;
+  font-family: $title-font;
   font-size: 16px;
+  line-height: 1.5;
+  color: inherit;
 
   border: none;
   overflow: auto;
@@ -114,13 +151,23 @@ textarea {
   box-shadow: none;
 
   resize: none;
+  &::placeholder {
+    color: $dark-grey;
+    opacity: 0.8;
+  }
 }
 
 footer {
-  margin: 0 50px;
+  margin: 0 $page-gutter;
   padding: 25px 0;
   border-top: solid $dark-grey 3px;
-  @media (max-width: 768px) {
-    margin: 0 25px;
+  @media (max-width: $mobile-breakpoint) {
+    margin: 0 $page-gutter-mobile;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
   }
 }
