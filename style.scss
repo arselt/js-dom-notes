@@ -4,6 +4,9 @@ $palette-cloud: #F4F4F8;
 $palette-butter: #FDF8D9;
 $palette-mint: #2FDAA7;
 $palette-coral: #D86E81;
+$palette-coral-soft: #EFB0BB;
+$palette-sky: #8EC5F2;
+$palette-gold: #F2D16B;
 
 // Roles: the only colors components should use.
 $color-desk: $palette-cloud;
@@ -12,6 +15,7 @@ $color-note: $palette-butter;
 $color-accent: $palette-mint;
 $color-tape: rgba($palette-coral, 0.55);
 $color-ink-on-ink: $palette-butter;
+$ribbon-colors: $palette-mint, $palette-coral-soft, $palette-sky, $palette-gold; // all >= 4.5:1 with $color-ink
 $color-rule: rgba($palette-slate, 0.14);
 
 $font-title: "DM Mono", monospace;
@@ -157,6 +161,11 @@ dialog {
   padding-bottom: 5px; // room for the keycap's lower edge
 }
 
+// Enter submits the form's first submit button, so "save" comes first in the DOM.
+.dialog-actions-reversed {
+  flex-direction: row-reverse;
+}
+
 @keyframes dialog-enter {
   from {
     opacity: 0;
@@ -172,6 +181,93 @@ dialog {
   &:hover {
     background-color: $color-ink;
     color: $color-ink-on-ink;
+  }
+}
+
+#notebookNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0 $page-gutter;
+  @media (max-width: $mobile-breakpoint) {
+    margin: 0 $page-gutter-mobile;
+  }
+}
+
+// One drop-shadow for all ribbons: clip-path would cut a per-element box-shadow.
+#ribbons {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 4px;
+  filter: drop-shadow(0 4px 3px rgba($palette-slate, 0.3));
+}
+
+.ribbon {
+  --ribbon-length: 14px;
+  min-width: 56px;
+  padding: 12px 16px calc(var(--ribbon-length) + 12px);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: $color-ink;
+  background: linear-gradient(90deg, rgba(#fff, 0.35), transparent 40%, rgba($palette-slate, 0.08));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 12px), 0 100%); // swallow-tail
+  transform-origin: top center;
+  transition: transform 0.25s $ease-spring, padding 0.25s $ease-spring;
+  &[aria-current] {
+    --ribbon-length: 34px;
+    font-weight: 700;
+  }
+  &:not([aria-current]):hover {
+    transform: perspective($perspective) rotateX(-14deg);
+  }
+  @each $color in $ribbon-colors {
+    $index: index($ribbon-colors, $color) - 1;
+    &[data-color="#{$index}"] {
+      background-color: $color;
+    }
+  }
+}
+
+.ribbon-add {
+  background-color: $color-desk;
+  color: $color-ink;
+  font-size: 22px;
+}
+
+#notebookActions {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.action-button {
+  min-height: $tap-target;
+  padding: 0 12px;
+  border-radius: 999px;
+  &:hover {
+    background-color: rgba($palette-slate, 0.1);
+  }
+}
+
+dialog input {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 12px;
+  font-family: $font-title;
+  font-size: 16px;
+  color: $color-ink;
+  background: rgba(#fff, 0.6);
+  border: 2px solid $color-ink;
+  border-radius: 8px;
+  &:focus-visible {
+    outline: 2px solid $color-ink;
+    outline-offset: 2px;
   }
 }
 
@@ -198,7 +294,7 @@ header {
 
 main {
   flex: 1;
-  margin: 65px $page-gutter 75px;
+  margin: 40px $page-gutter 75px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, $card-min-width), 1fr));
   align-content: start;

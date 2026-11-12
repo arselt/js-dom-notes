@@ -16,17 +16,31 @@
       <h1>dom-notes</h1>
       <button id="addNote" class="button" type="button">add note</button>
     </header>
+    <nav id="notebookNav" aria-label="Notebooks">
+      <div id="ribbons"></div>
+      <div id="notebookActions"></div>
+    </nav>
     <main id="noteContainer">
     </main>
     <footer>
       <p> made on La Laguna 🌵 by Arath</p>
     </footer>
-    <dialog id="deleteDialog" aria-labelledby="deleteDialogTitle">
+    <dialog id="confirmDialog" aria-labelledby="confirmDialogMessage">
       <form method="dialog">
-        <p id="deleteDialogTitle">Permanently delete this note?</p>
+        <p id="confirmDialogMessage"></p>
         <div class="dialog-actions">
           <button class="button cancel-button" value="cancel" autofocus>cancel</button>
           <button class="button keycap keycap-dark" value="confirm">delete</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="notebookDialog" aria-labelledby="notebookDialogTitle">
+      <form method="dialog">
+        <p id="notebookDialogTitle"></p>
+        <input id="notebookNameInput" name="name" maxlength="24" required autocomplete="off" aria-labelledby="notebookDialogTitle" />
+        <div class="dialog-actions dialog-actions-reversed">
+          <button class="button keycap keycap-dark" value="confirm">save</button>
+          <button class="button cancel-button" value="cancel" formnovalidate>cancel</button>
         </div>
       </form>
     </dialog>
