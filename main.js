@@ -6,7 +6,12 @@ let noteCounter = 1;
 document.addEventListener('DOMContentLoaded', loadNotes);
 
 function loadNotes() {
-    const savedNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    let savedNotes = [];
+    try {
+        savedNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    } catch {
+        savedNotes = [];
+    }
 
     savedNotes.forEach(note => {
         const article = createNoteElement(note.id, note.content);
