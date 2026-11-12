@@ -25,9 +25,9 @@ To run this project locally, follow these steps:
    ```
 2. Install dependencies:
    ```sh
-   npm install
+   pnpm install
    ```
 3. Start the development server:
    ```sh
-   npm run dev
+   pnpm dev
    ```
