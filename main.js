@@ -1,5 +1,6 @@
 const noteContainer = document.getElementById("noteContainer");
 const addNoteButton = document.getElementById("addNote");
+const deleteDialog = document.getElementById("deleteDialog");
 
 let noteCounter = 1;
 
@@ -89,8 +90,19 @@ function saveNotes() {
     localStorage.setItem('notes', JSON.stringify(notes));
 }
 
+let noteToDelete = null;
+
 function deleteNote(noteItem) {
-    if (!confirm("Permanently delete this note?")) return;
+    noteToDelete = noteItem;
+    deleteDialog.showModal();
+}
+
+deleteDialog.addEventListener('close', () => {
+    const noteItem = noteToDelete;
+    const isConfirmed = deleteDialog.returnValue === 'confirm';
+    noteToDelete = null;
+    deleteDialog.returnValue = ''; // Escape keeps the previous value otherwise
+    if (!isConfirmed || !noteItem) return;
 
     const removeNote = () => {
         noteItem.remove();
@@ -102,7 +114,7 @@ function deleteNote(noteItem) {
     }
     noteItem.classList.add('is-removing');
     noteItem.addEventListener('animationend', removeNote, { once: true });
-}
+});
 
 addNoteButton.addEventListener("click", () => {
     addNoteFunc();

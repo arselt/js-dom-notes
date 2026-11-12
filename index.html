@@ -21,6 +21,15 @@
     <footer>
       <p> made on La Laguna 🌵 by Arath</p>
     </footer>
+    <dialog id="deleteDialog" aria-labelledby="deleteDialogTitle">
+      <form method="dialog">
+        <p id="deleteDialogTitle">Permanently delete this note?</p>
+        <div class="dialog-actions">
+          <button class="button cancel-button" value="cancel" autofocus>cancel</button>
+          <button class="button keycap keycap-dark" value="confirm">delete</button>
+        </div>
+      </form>
+    </dialog>
     <script type="module" src="/main.js"></script>
   </body>
 </html>

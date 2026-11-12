@@ -79,30 +79,88 @@ h1 {
 }
 
 // Keycap: raised bevel that sinks when pressed.
-#addNote {
+@mixin keycap($face-top, $face-bottom, $text-color) {
   min-height: $tap-target;
   padding: 0 22px;
   border-radius: 999px;
   border: 2px solid $color-ink;
-  background: linear-gradient(180deg, lighten($color-accent, 18%), $color-accent);
+  color: $text-color;
+  background: linear-gradient(180deg, $face-top, $face-bottom);
   box-shadow:
-    inset 0 2px 0 rgba(#fff, 0.7),
+    inset 0 2px 0 rgba(#fff, 0.5),
     0 5px 0 $color-ink,
     0 9px 12px rgba($palette-slate, 0.3);
   transform: translateY(0);
   &:hover {
     transform: translateY(-2px);
     box-shadow:
-      inset 0 2px 0 rgba(#fff, 0.7),
+      inset 0 2px 0 rgba(#fff, 0.5),
       0 7px 0 $color-ink,
       0 13px 16px rgba($palette-slate, 0.3);
   }
   &:active {
     transform: translateY(5px);
     box-shadow:
-      inset 0 2px 0 rgba(#fff, 0.5),
+      inset 0 2px 0 rgba(#fff, 0.3),
       0 0 0 $color-ink,
       0 2px 4px rgba($palette-slate, 0.3);
+  }
+}
+
+#addNote {
+  @include keycap(lighten($color-accent, 18%), $color-accent, $color-ink);
+}
+
+.keycap-dark {
+  @include keycap(lighten($color-ink, 12%), $color-ink, $color-ink-on-ink);
+}
+
+.cancel-button {
+  min-height: $tap-target;
+  padding: 0 18px;
+  border-radius: 999px;
+  &:hover {
+    background-color: rgba($palette-slate, 0.1);
+  }
+}
+
+dialog {
+  margin: auto;
+  padding: 32px 28px 28px;
+  max-width: min(92vw, 380px);
+  color: $color-ink;
+  border: none;
+  border-radius: 6px 6px 22px 6px;
+  background:
+    linear-gradient(160deg, rgba(#fff, 0.55) 0%, transparent 45%),
+    linear-gradient(180deg, lighten($color-note, 3%), darken($color-note, 4%));
+  box-shadow: $shadow-note-lifted, inset 0 1px 0 rgba(#fff, 0.8);
+  &[open] {
+    animation: dialog-enter 0.45s $ease-spring both;
+  }
+  &::backdrop {
+    background: rgba($palette-slate, 0.45);
+    backdrop-filter: blur(4px);
+  }
+  p {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+  padding-bottom: 5px; // room for the keycap's lower edge
+}
+
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+    transform: perspective($perspective) translateY(40px) translateZ(-200px) rotateX(40deg);
   }
 }
 
