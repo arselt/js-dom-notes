@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:list";
+
 // Palette: raw colors, only referenced by the role tokens below.
 $palette-slate: #424B54;
 $palette-cloud: #F4F4F8;
@@ -112,11 +115,11 @@ h1 {
 }
 
 #addNote {
-  @include keycap(lighten($color-accent, 18%), $color-accent, $color-ink);
+  @include keycap(color.adjust($color-accent, $lightness: 18%), $color-accent, $color-ink);
 }
 
 .keycap-dark {
-  @include keycap(lighten($color-ink, 12%), $color-ink, $color-ink-on-ink);
+  @include keycap(color.adjust($color-ink, $lightness: 12%), $color-ink, $color-ink-on-ink);
 }
 
 .cancel-button {
@@ -137,7 +140,7 @@ dialog {
   border-radius: 6px 6px 22px 6px;
   background:
     linear-gradient(160deg, rgba(#fff, 0.55) 0%, transparent 45%),
-    linear-gradient(180deg, lighten($color-note, 3%), darken($color-note, 4%));
+    linear-gradient(180deg, color.adjust($color-note, $lightness: 3%), color.adjust($color-note, $lightness: -4%));
   box-shadow: $shadow-note-lifted, inset 0 1px 0 rgba(#fff, 0.8);
   &[open] {
     animation: dialog-enter 0.45s $ease-spring both;
@@ -227,7 +230,7 @@ dialog {
     transform: perspective($perspective) rotateX(-14deg);
   }
   @each $color in $ribbon-colors {
-    $index: index($ribbon-colors, $color) - 1;
+    $index: list.index($ribbon-colors, $color) - 1;
     &[data-color="#{$index}"] {
       background-color: $color;
     }
@@ -320,7 +323,7 @@ article {
   position: relative;
   background:
     linear-gradient(160deg, rgba(#fff, 0.55) 0%, transparent 45%),
-    linear-gradient(180deg, lighten($color-note, 3%), darken($color-note, 4%));
+    linear-gradient(180deg, color.adjust($color-note, $lightness: 3%), color.adjust($color-note, $lightness: -4%));
   box-shadow: $shadow-note, inset 0 1px 0 rgba(#fff, 0.8);
   aspect-ratio: 1;
   border-radius: 6px 6px 22px 6px;
